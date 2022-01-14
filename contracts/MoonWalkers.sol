@@ -12,7 +12,6 @@ contract MoonWalkers is ERC721Enumerable, ERC2981, Ownable, ReentrancyGuard {
 
     string public baseURI = "";
     string public defaultURI = "";
-    uint256 public constant PRICE = 0.1 ether; // 0.1 GLMR
     uint public maxPerUser = 3;
     uint256 public MAX_SUPPLY = 2000;
     bool public saleIsActive = false;
@@ -110,7 +109,7 @@ contract MoonWalkers is ERC721Enumerable, ERC2981, Ownable, ReentrancyGuard {
         require(saleIsActive, "Sale must be active to mint");
         require(amount.add(purchases[msg.sender]) <= maxPerUser, "More than max per user");
         require(totalSupply().add(amount) <= MAX_SUPPLY, "Purchase would exceed max supply");
-        require(PRICE.mul(amount) == msg.value, "Value sent is not correct");
+        require(0 == msg.value, "That's a free mint");
 
         purchases[msg.sender] = purchases[msg.sender] + amount;
 
