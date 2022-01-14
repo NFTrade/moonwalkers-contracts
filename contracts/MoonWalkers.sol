@@ -71,13 +71,11 @@ contract MoonWalkers is ERC721Enumerable, ERC2981, Ownable, ReentrancyGuard {
     /// @param amount the amount to mint
     function mint(uint256 amount)
         public
-        payable
         nonReentrant
     {
         require(saleIsActive, "Sale must be active to mint");
         require(amount.add(purchases[msg.sender]) <= maxPerUser, "More than max per user");
         require(totalSupply().add(amount) <= MAX_SUPPLY, "Purchase would exceed max supply");
-        require(0 == msg.value, "That's a free mint");
 
         purchases[msg.sender] = purchases[msg.sender] + amount;
 
