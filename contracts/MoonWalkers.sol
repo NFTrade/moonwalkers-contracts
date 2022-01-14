@@ -13,16 +13,15 @@ contract MoonWalkers is ERC721Enumerable, ERC2981, Ownable, ReentrancyGuard {
     string public baseURI = "";
     string public defaultURI = "";
     uint public maxPerUser = 3;
-    uint256 public MAX_SUPPLY = 2000;
+    uint256 public MAX_SUPPLY = 3500;
     bool public saleIsActive = false;
-    uint256 private royaltiesFees;
-    address private royaltiesAddress;
 
     // mapping of address to amount
     mapping (address => uint256) public purchases;
 
-    constructor(string memory name, string memory symbol, string memory _defaultURI)
+    constructor(string memory name, string memory symbol, string memory _defaultURI, uint256 _royaltiesFees, address _royaltiesAddress)
         ERC721(name, symbol)
+        ERC2981(_royaltiesFees, _royaltiesAddress)
     {
         defaultURI = _defaultURI;
     }
@@ -40,27 +39,6 @@ contract MoonWalkers is ERC721Enumerable, ERC2981, Ownable, ReentrancyGuard {
         saleIsActive = !saleIsActive;
     }
 
-    /// @dev sets royalties address
-    /// for 2981
-    function setRoyaltiesAddress(address _royaltiesAddress)
-        public
-        onlyOwner
-    {
-        royaltiesAddress = _royaltiesAddress;
-    }
-
-    /// @dev sets royalties fees
-    function setRoyaltiesFees(uint256 _royaltiesFees)
-        public
-        onlyOwner
-    {
-        royaltiesFees = _royaltiesFees;
-    }
-
-    function withdraw() public onlyOwner {
-        payable(msg.sender).transfer(address(this).balance);
-    }
-
     /// @inheritdoc	ERC721
     function supportsInterface(bytes4 interfaceId)
         public
@@ -70,16 +48,6 @@ contract MoonWalkers is ERC721Enumerable, ERC2981, Ownable, ReentrancyGuard {
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
-    }
-
-    /// @inheritdoc	IERC2981
-    function royaltyInfo(uint256 tokenId, uint256 value)
-        external
-        view
-        override
-        returns (address receiver, uint256 royaltyAmount)
-    {
-        return (royaltiesAddress, value * royaltiesFees / 100);
     }
 
     /**
